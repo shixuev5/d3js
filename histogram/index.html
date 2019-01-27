@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>d3 - 柱状图绘制</title>
+  </head>
+  <body>
+    <script src="https://cdn.bootcss.com/d3/5.7.0/d3.min.js"></script>
+    <script>
+      const dataSource = [50, 43, 120, 87, 99, 167, 142];
+      const padding = { top: 20, right: 20, bottom: 20, left: 20 };
+      const rectStep = 35;
+      const rectWidth = 30;
+
+      const svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", 400)
+        .attr("height", 400);
+
+      function draw() {
+        const updateRect = svg.selectAll("rect").data(dataSource);
+
+        updateRect
+          .attr("fill", "steelblue")
+          .attr("x", (d, i) => padding.left + i * rectStep)
+          .attr("y", d => 400 - padding.bottom - d)
+          .attr("width", rectWidth)
+          .attr("height", d => d);
+
+        updateRect
+          .enter()
+          .append("rect")
+          .attr("fill", "steelblue")
+          .attr("x", (d, i) => padding.left + i * rectStep)
+          .attr("y", d => 400 - padding.bottom - d)
+          .attr("width", rectWidth)
+          .attr("height", d => d);
+
+        updateRect.exit().remove();
+
+        const updateText = svg.selectAll("text").data(dataSource);
+
+        updateText
+          .attr("fill", "white")
+          .attr("text-anchor", "middle")
+          .attr("font-size", "14px")
+          .attr("x", (d, i) => padding.left + i * rectStep)
+          .attr("y", d => 400 - padding.bottom - d)
+          .attr("dx", rectWidth / 2)
+          .attr("dy", "1em")
+          .text(d => d);
+
+        updateText
+          .enter()
+          .append("text")
+          .attr("fill", "white")
+          .attr("text-anchor", "middle")
+          .attr("font-size", "14px")
+          .attr("x", (d, i) => padding.left + i * rectStep)
+          .attr("y", d => 400 - padding.bottom - d)
+          .attr("dx", rectWidth / 2)
+          .attr("dy", "1em")
+          .text(d => d);
+
+        updateText.exit().remove();
+      }
+
+      function sort() {
+        dataSource.sort(d3.ascending);
+        draw();
+      }
+
+      function append() {
+        dataSource.push(Math.floor(Math.random() * 100));
+        draw();
+      }
+
+      draw();
+    </script>
+    <br>
+    <button type="button" onclick="sort()">排序</button>
+    <button type="button" onclick="append()">增加数据</button>
+  </body>
+</html>
